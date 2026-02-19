@@ -1,360 +1,291 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>QR Code Generator by SiaMLabBD</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>QR Generator</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#e9ecef;
-      --card:#ffffff;
-      --text:#222;
-      --muted:#6c757d;
-      --primary:#007bff;
-      --success:#28a745;
-      --danger:#dc3545;
-      --border:#ced4da;
-      --shadow:0 10px 30px rgba(0,0,0,.12);
-      --radius:14px;
-    }
-    *{ box-sizing:border-box; }
+<style>
+:root{
+  --bg:#e9ecef;
+  --card:#ffffff;
+  --primary:#007bff;
+  --success:#28a745;
+  --danger:#dc3545;
+  --border:#ced4da;
+  --shadow:0 10px 30px rgba(0,0,0,.12);
+  --radius:14px;
+}
+*{ box-sizing:border-box; }
 
-    body{
-      font-family:'Roboto',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100svh; /* ✅ mobile 100vh fix */
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-    }
+body{
+  font-family:'Roboto',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:#222;
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
 
-    .container{
-      width:100%;
-      max-width:440px;
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      text-align:center;
-    }
+.container{
+  width:100%;
+  max-width:480px;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  text-align:center;
+}
 
-    h1{ margin:0 0 6px; font-size:20px; letter-spacing:.2px; }
-    .sub{ margin:0 0 16px; font-size:13px; color:var(--muted); }
+.field{ text-align:left; margin-top:12px; }
+label{ display:block; font-size:12px; color:#6c757d; margin:0 0 6px; }
 
-    .field{ text-align:left; margin-top:12px; }
-    label{ display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
+input[type="text"], select{
+  width:100%;
+  padding:12px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:15px;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  background:#fff;
+}
+input[type="text"]:focus, select:focus{
+  border-color:rgba(0,123,255,.7);
+  box-shadow:0 0 0 3px rgba(0,123,255,.15);
+}
 
-    input[type="text"], select{
-      width:100%;
-      padding:12px 12px;
-      border:1px solid var(--border);
-      border-radius:10px;
-      font-size:15px;
-      outline:none;
-      transition:border-color .2s, box-shadow .2s;
-      background:#fff;
-    }
-    input[type="text"]:focus, select:focus{
-      border-color:rgba(0,123,255,.7);
-      box-shadow:0 0 0 3px rgba(0,123,255,.15);
-    }
+.btnrow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
 
-    .row{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
+button{
+  flex:1;
+  min-width:130px;
+  padding:12px 14px;
+  border:0;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:700;
+  transition: transform .05s, filter .2s;
+  user-select:none;
+}
+button:active{ transform: translateY(1px); }
 
-    .btnrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
+.btn-primary{ background:var(--primary); color:#fff; }
+.btn-success{ background:var(--success); color:#fff; }
+.btn-ghost{ background:#f1f3f5; color:#111; }
 
-    button{
-      flex:1;
-      min-width:130px;
-      padding:12px 14px;
-      border:0;
-      border-radius:10px;
-      cursor:pointer;
-      font-size:14px;
-      font-weight:700;
-      transition: transform .05s, filter .2s;
-      user-select:none;
-    }
-    button:active{ transform: translateY(1px); }
+button:disabled{ opacity:.55; cursor:not-allowed; }
 
-    .btn-primary{ background:var(--primary); color:#fff; }
-    .btn-success{ background:var(--success); color:#fff; }
-    .btn-ghost{ background:#f1f3f5; color:#111; }
+.error{
+  display:none;
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:rgba(220,53,69,.08);
+  color:var(--danger);
+  font-size:13px;
+  text-align:left;
+  border:1px solid rgba(220,53,69,.18);
+}
 
-    button:disabled{ opacity:.55; cursor:not-allowed; }
+#qrWrap{
+  margin-top:16px;
+  display:flex;
+  justify-content:flex-start;
+  align-items:flex-start;
+  position:relative;
+  width:100%;
+  height:400px; /* container height */
+  border:1px solid transparent;
+}
 
-    .error{
-      display:none;
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:10px;
-      background:rgba(220,53,69,.08);
-      color:var(--danger);
-      font-size:13px;
-      text-align:left;
-      border:1px solid rgba(220,53,69,.18);
-    }
+canvas{
+  max-width:none;
+  height:auto;
+  border:3px solid var(--primary);
+  border-radius:12px;
+  background:#fff;
+  display:block;
+  position:absolute;
+}
 
-    #qrWrap{ margin-top:16px; display:none; }
-    canvas{
-      width:250px;
-      height:250px;
-      border:3px solid var(--primary);
-      border-radius:12px;
-      background:#fff;
-      display:block;
-      margin:0 auto 12px;
-    }
-
-    .note{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:10px;
-      line-height:1.35;
-    }
-  </style>
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>QR Code Generator</h1>
-    <p class="sub">by SiaMLabBD • Text/Link লিখুন → Generate (প্রতিবার রং বদলাবে)</p>
+<div class="container">
 
-    <div class="field">
-      <label for="inputText">Text / Link</label>
-      <input id="inputText" type="text" placeholder="যেমন: https://example.com" autocomplete="off" />
-      <div id="errorBox" class="error"></div>
-    </div>
+<div class="field">
+  <input id="inputText" type="text" placeholder="Text / Link" autocomplete="off" />
+  <div id="errorBox" class="error"></div>
+</div>
 
-    <div class="row">
-      <div class="field">
-        <label for="sizeSel">QR Size</label>
-        <select id="sizeSel">
-          <option value="200">200px</option>
-          <option value="250" selected>250px</option>
-          <option value="300">300px</option>
-          <option value="350">350px</option>
-        </select>
-      </div>
-    </div>
+<div class="field">
+  <select id="sizeSel">
+    <option value="200">200px</option>
+    <option value="250" selected>250px</option>
+    <option value="300">300px</option>
+    <option value="350">350px</option>
+  </select>
+</div>
 
-    <div class="btnrow">
-      <button id="generateBtn" class="btn-primary">Generate QR</button>
-      <button id="clearBtn" class="btn-ghost" type="button">Clear</button>
-    </div>
+<div class="field">
+  <select id="modeSel">
+    <option value="manual" selected>Manual</option>
+    <option value="custom">Custom Position (inch)</option>
+  </select>
+</div>
 
-    <div class="btnrow">
-      <button id="downloadPngBtn" class="btn-success" disabled>Download PNG</button>
-      <button id="downloadJpgBtn" class="btn-success" disabled>Download JPG</button>
-      <button id="downloadTransBtn" class="btn-success" disabled>Transparent PNG</button>
-    </div>
-
-    <div id="qrWrap">
-      <canvas id="qrCanvas"></canvas>
-    </div>
-
-    <div class="note">
-      টিপস: Enter চাপলে Generate হবে।<br/>
-      Transparent PNG = background transparent (শুধু QR থাকবে)।
-    </div>
+<div id="customPosRow" style="display:none;">
+  <div class="field">
+    <input type="text" id="topPos" placeholder="Top (inch)" />
   </div>
+  <div class="field">
+    <input type="text" id="leftPos" placeholder="Left (inch)" />
+  </div>
+</div>
 
-  <!-- QRious CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.0/qrious.min.js"></script>
+<div class="btnrow">
+  <button id="generateBtn" class="btn-primary">Generate</button>
+  <button id="clearBtn" class="btn-ghost">Clear</button>
+</div>
 
-  <script>
-    const inputEl = document.getElementById('inputText');
-    const sizeSel = document.getElementById('sizeSel');
+<div class="btnrow">
+  <button id="downloadPngBtn" class="btn-success" disabled>PNG</button>
+  <button id="downloadJpgBtn" class="btn-success" disabled>JPG</button>
+  <button id="downloadTransBtn" class="btn-success" disabled>Transparent PNG</button>
+</div>
 
-    const generateBtn = document.getElementById('generateBtn');
-    const clearBtn = document.getElementById('clearBtn');
+<div id="qrWrap">
+  <canvas id="qrCanvas"></canvas>
+</div>
 
-    const downloadPngBtn = document.getElementById('downloadPngBtn');
-    const downloadJpgBtn = document.getElementById('downloadJpgBtn');
-    const downloadTransBtn = document.getElementById('downloadTransBtn');
+</div>
 
-    const qrWrap = document.getElementById('qrWrap');
-    const qrCanvas = document.getElementById('qrCanvas');
-    const errorBox = document.getElementById('errorBox');
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.0/qrious.min.js"></script>
+<script>
+const inputEl=document.getElementById('inputText');
+const sizeSel=document.getElementById('sizeSel');
+const generateBtn=document.getElementById('generateBtn');
+const clearBtn=document.getElementById('clearBtn');
+const downloadPngBtn=document.getElementById('downloadPngBtn');
+const downloadJpgBtn=document.getElementById('downloadJpgBtn');
+const downloadTransBtn=document.getElementById('downloadTransBtn');
+const qrWrap=document.getElementById('qrWrap');
+const qrCanvas=document.getElementById('qrCanvas');
+const errorBox=document.getElementById('errorBox');
 
-    // ✅ 20 predefined colors (randomized now)
-    const COLORS = [
-      "#00c853", "#2962ff", "#d500f9", "#ff1744", "#ff9100",
-      "#00b0ff", "#1de9b6", "#c6ff00", "#ffd600", "#651fff",
-      "#00e5ff", "#76ff03", "#ff3d00", "#aa00ff", "#00c853",
-      "#304ffe", "#f50057", "#ff6d00", "#00bfa5", "#aeea00"
-    ];
+const modeSel=document.getElementById('modeSel');
+const customPosRow=document.getElementById('customPosRow');
+const topPos=document.getElementById('topPos');
+const leftPos=document.getElementById('leftPos');
 
-    // ✅ QR object
-    let qr = null;
+const COLORS=[
+"#00c853","#2962ff","#d500f9","#ff1744","#ff9100",
+"#00b0ff","#1de9b6","#c6ff00","#ffd600","#651fff",
+"#00e5ff","#76ff03","#ff3d00","#aa00ff","#00c853",
+"#304ffe","#f50057","#ff6d00","#00bfa5","#aeea00"
+];
 
-    function showError(msg){
-      errorBox.textContent = msg;
-      errorBox.style.display = 'block';
-    }
-    function hideError(){
-      errorBox.textContent = '';
-      errorBox.style.display = 'none';
-    }
+let qr=null;
 
-    // ✅ র‍্যান্ডম রঙ
-    function nextColor(){
-      const idx = Math.floor(Math.random() * COLORS.length);
-      return COLORS[idx];
-    }
+function showError(msg){ errorBox.textContent=msg; errorBox.style.display='block'; }
+function hideError(){ errorBox.textContent=''; errorBox.style.display='none'; }
 
-    function enableDownloads(on){
-      downloadPngBtn.disabled = !on;
-      downloadJpgBtn.disabled = !on;
-      downloadTransBtn.disabled = !on;
-    }
+function nextColor(){ return COLORS[Math.floor(Math.random()*COLORS.length)]; }
 
-    function makeBaseName(){
-      const v = (inputEl.value || 'qr').trim().slice(0, 24);
-      return (v.replace(/[^\w\-]+/g, '_') || 'qr');
-    }
-    function makeStamp(){
-      return new Date().toISOString().replace(/[:.]/g,'-');
-    }
-    function triggerDownload(dataURL, filename){
-      const a = document.createElement('a');
-      a.href = dataURL;
-      a.download = filename;
-      a.click();
-    }
+function enableDownloads(on){
+  downloadPngBtn.disabled=!on;
+  downloadJpgBtn.disabled=!on;
+  downloadTransBtn.disabled=!on;
+}
 
-    function generateQR(autoDownload=false){
-      const value = (inputEl.value || '').trim();
-      const size = parseInt(sizeSel.value, 10) || 250;
+function makeBaseName(){
+  const v=(inputEl.value||'qr').trim().slice(0,24);
+  return (v.replace(/[^\w\-]+/g,'_')||'qr');
+}
+function makeStamp(){ return new Date().toISOString().replace(/[:.]/g,'-'); }
+function triggerDownload(dataURL, filename){ const a=document.createElement('a'); a.href=dataURL; a.download=filename; a.click(); }
 
-      if(!value){
-        qrWrap.style.display = 'none';
-        enableDownloads(false);
-        showError('দয়া করে Text বা Link লিখুন।');
-        inputEl.focus();
-        return;
-      }
+function generateQR(autoDownload=false){
+  const value=(inputEl.value||'').trim();
+  const size=parseInt(sizeSel.value,10)||250;
+  if(!value){ qrWrap.style.display='flex'; enableDownloads(false); showError('Text/Link দিন।'); inputEl.focus(); return; }
+  hideError();
 
-      hideError();
+  const fg=nextColor();
+  const scale=2;
 
-      const fg = nextColor();
+  qrCanvas.width=size*scale;
+  qrCanvas.height=size*scale;
+  qrCanvas.style.width=size+'px';
+  qrCanvas.style.height=size+'px';
 
-      // ✅ High-resolution canvas (2x)
-      const scale = 2;
-      qrCanvas.width = size * scale;
-      qrCanvas.height = size * scale;
-      qrCanvas.style.width = size + "px";
-      qrCanvas.style.height = size + "px";
+  if(modeSel.value==='custom'){
+    const topInch=parseFloat(topPos.value)||0;
+    const leftInch=parseFloat(leftPos.value)||0;
+    qrCanvas.style.top=(topInch*96)+'px';
+    qrCanvas.style.left=(leftInch*96)+'px';
+  } else{
+    qrCanvas.style.top='0px';
+    qrCanvas.style.left='0px';
+  }
 
-      if(!qr){
-        qr = new QRious({
-          element: qrCanvas,
-          size: size * scale,
-          level: 'H',
-          background: '#ffffff',
-          foreground: fg,
-          value: value
-        });
-      } else {
-        qr.size = size * scale;
-        qr.value = value;
-        qr.background = '#ffffff';
-        qr.foreground = fg;
-      }
+  if(!qr){
+    qr=new QRious({element:qrCanvas,size:size*scale,level:'H',background:'#fff',foreground:fg,value:value});
+  } else{
+    qr.size=size*scale;
+    qr.value=value;
+    qr.background='#fff';
+    qr.foreground=fg;
+  }
 
-      qrWrap.style.display = 'block';
-      enableDownloads(true);
+  qrWrap.style.display='flex';
+  enableDownloads(true);
 
-      // ✅ Auto-download if requested
-      if(autoDownload){
-        const name = `${makeBaseName()}_${makeStamp()}.png`;
-        triggerDownload(qrCanvas.toDataURL('image/png'), name);
-      }
-    }
+  if(autoDownload){
+    triggerDownload(qrCanvas.toDataURL('image/png'), `${makeBaseName()}_${makeStamp()}.png`);
+  }
+}
 
-    function clearAll(){
-      inputEl.value = '';
-      hideError();
-      qrWrap.style.display = 'none';
-      enableDownloads(false);
+function clearAll(){
+  inputEl.value=''; hideError(); qrWrap.style.display='flex'; enableDownloads(false);
+  const ctx=qrCanvas.getContext('2d'); ctx.clearRect(0,0,qrCanvas.width,qrCanvas.height); inputEl.focus();
+}
 
-      const ctx = qrCanvas.getContext('2d');
-      ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
-      inputEl.focus();
-    }
+generateBtn.addEventListener('click',()=>generateQR());
+clearBtn.addEventListener('click',clearAll);
 
-    // ---------- Download handlers ----------
-    downloadPngBtn.addEventListener('click', () => {
-      if(downloadPngBtn.disabled) return;
-      const name = `${makeBaseName()}_${makeStamp()}.png`;
-      triggerDownload(qrCanvas.toDataURL('image/png'), name);
-    });
+downloadPngBtn.addEventListener('click',()=>{ if(downloadPngBtn.disabled)return; triggerDownload(qrCanvas.toDataURL('image/png'),`${makeBaseName()}_${makeStamp()}.png`); });
+downloadJpgBtn.addEventListener('click',()=>{ if(downloadJpgBtn.disabled)return; triggerDownload(qrCanvas.toDataURL('image/jpeg',0.95),`${makeBaseName()}_${makeStamp()}.jpg`); });
+downloadTransBtn.addEventListener('click',()=>{
+  if(downloadTransBtn.disabled)return;
+  const w=qrCanvas.width,h=qrCanvas.height,srcCtx=qrCanvas.getContext('2d'),img=srcCtx.getImageData(0,0,w,h);
+  const off=document.createElement('canvas'); off.width=w; off.height=h; const offCtx=off.getContext('2d');
+  const d=img.data;
+  for(let i=0;i<d.length;i+=4){ const r=d[i],g=d[i+1],b=d[i+2]; if(r>245 && g>245 && b>245){ d[i+3]=0; } }
+  offCtx.putImageData(img,0,0);
+  triggerDownload(off.toDataURL('image/png'),`${makeBaseName()}_${makeStamp()}_transparent.png`);
+});
 
-    downloadJpgBtn.addEventListener('click', () => {
-      if(downloadJpgBtn.disabled) return;
-      const name = `${makeBaseName()}_${makeStamp()}.jpg`;
-      triggerDownload(qrCanvas.toDataURL('image/jpeg', 0.95), name);
-    });
+inputEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter') generateQR(); });
 
-    downloadTransBtn.addEventListener('click', () => {
-      if(downloadTransBtn.disabled) return;
+modeSel.addEventListener('change',()=>{ if(modeSel.value==='custom') customPosRow.style.display='grid'; else customPosRow.style.display='none'; });
 
-      const w = qrCanvas.width;
-      const h = qrCanvas.height;
-      const srcCtx = qrCanvas.getContext('2d');
-      const img = srcCtx.getImageData(0, 0, w, h);
-
-      const off = document.createElement('canvas');
-      off.width = w;
-      off.height = h;
-      const offCtx = off.getContext('2d');
-
-      const d = img.data;
-      for(let i = 0; i < d.length; i += 4){
-        const r = d[i], g = d[i+1], b = d[i+2];
-        if(r > 245 && g > 245 && b > 245){
-          d[i+3] = 0;
-        }
-      }
-      offCtx.putImageData(img, 0, 0);
-
-      const name = `${makeBaseName()}_${makeStamp()}_transparent.png`;
-      triggerDownload(off.toDataURL('image/png'), name);
-    });
-
-    // UI events
-    generateBtn.addEventListener('click', () => generateQR());
-    clearBtn.addEventListener('click', clearAll);
-
-    // ✅ Mobile-friendly touch support (Enter + Tap)
-    inputEl.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') generateQR();
-    });
-    qrCanvas.addEventListener('touchstart', () => generateQR());
-
-    sizeSel.addEventListener('change', () => {
-      if(qrWrap.style.display === 'block') generateQR();
-    });
-
-    enableDownloads(false);
-  </script>
+enableDownloads(false);
+</script>
 </body>
 </html>
